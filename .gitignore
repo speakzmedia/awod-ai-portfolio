@@ -33,6 +33,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# .env.example ist die VORLAGE ohne Geheimnisse und gehoert ins Repo.
+# Ohne diese Zeile schluckt das Muster darueber sie still.
+!.env.example
 
 # vercel
 .vercel
