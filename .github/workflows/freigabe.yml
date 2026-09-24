@@ -1,0 +1,35 @@
+name: Freigabe
+
+# Ruft den zentralen Workflow speakzmedia/.github → .github/workflows/freigabe.yml.
+# Dort steht, was er tut und warum. Angestossen von `pr-merge-auto <nr>`
+# (speakz-bin), in sdrs von `bash scripts/pr-mergen.sh <nr> --auto`.
+# Der Dateiname `freigabe.yml` ist Teil der Schnittstelle: das Werkzeug ruft
+# `gh workflow run freigabe.yml`.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: "PR-Nummer"
+        required: true
+      kopf:
+        description: "Kopf-SHA, 40 Zeichen"
+        required: true
+  pull_request:
+    types: [synchronize]
+
+# Obergrenze für den zentralen Workflow; seine Jobs verengen weiter.
+# `contents: write` braucht nur das Abschalten des Auto-Merge (gemessen
+# 24.09.2026: mit read „Resource not accessible by integration“).
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  issues: read
+
+jobs:
+  freigabe:
+    # Bei einem Push ohne eingeschalteten Auto-Merge startet nichts.
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.auto_merge != null
+    uses: speakzmedia/.github/.github/workflows/freigabe.yml@main
+    secrets: inherit
